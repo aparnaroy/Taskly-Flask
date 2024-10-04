@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Taskly</title>
+    <link rel="icon" href="./img/favicon.ico" type="image/x-icon"/>
+    <link href="./css/main-page.css" rel="stylesheet" type="text/css" />
+    <link href="./css/main-page-dark.css" rel="stylesheet" type="text/css" />
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+        integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous">
+    </script>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Top Navbar -->
+        <div class="left-top-navbar" style="padding: 10px;"></div>
+        <img src="./img/sidebar-icon-black.png" class="menu-icon" id="sidebarIcon" onclick="toggleNav()">
+        <img src="./img/logo.png" alt="Taskly" class="logo"/>
+        
+        <div class="top-nav">
+            <div class="right-top-navbar">
+                <img src="./img/lightdark-icon-black.png" class="mode-icon" id="lightdarkIcon" onclick="toggleLightDarkMode()">
+                <!------- TODO: Remove placeholder username, user-circle, and user-email text -------->
+                <span class="username">Welcome, Royal Devil</span> 
+                <div class="user-circle" onclick="toggleDropdown()">R</div>
+
+                <!-- Dropdown Menu -->
+                <div class="user-dropdown" id="userDropdown">
+                    <p class="user-email">royaldevil@gmail.com</p> <!-- User email will be displayed here -->
+                    <button class="logout-button" onclick="signOut()">Log Out</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Side Navbar -->
+        <div id="side-nav" class="side-nav">
+            <div id="lists">
+                <h2>
+                    My Lists
+                    <img src="./img/add.png" class="add-list" onclick="addNewList()" alt="Add"/>
+                </h2>
+                <div class="list-item">
+                    <a href="#">List 1</a>
+                </div>
+                <div class="list-item">
+                    <a href="#">List 2</a>
+                </div>
+                <div class="list-item">
+                    <a href="#">List 3</a>
+                </div>
+            </div>
+            <div id="tags">
+                <h2>
+                    Tags
+                    <img src="./img/add.png" class="add-tag" onclick="addNewTag()" alt="Add"/>
+                </h2>
+                <div class="tag-item">
+                    <a href="#" class="tag-name">Work</a>
+                    <input type="color" class="color-picker" value="#0279c9">
+                </div>
+                <div class="tag-item">
+                    <a href="#" class="tag-name">Personal</a>
+                    <input type="color" class="color-picker" value="#910ea1">
+                </div>
+                <div class="tag-item">
+                    <a href="#" class="tag-name">School</a>
+                    <input type="color" class="color-picker" value="#11a2bf">
+                </div>
+                <div class="tag-item">
+                    <a href="#" class="tag-name">Urgent</a>
+                    <input type="color" class="color-picker" value="#bf1111">
+                </div>
+            </div>
+        </div>
+
+        <!-- Context Menu Shown on Right Click -->
+        <ul id="context-menu" class="context-menu">
+            <li id="delete-option">Delete</li>
+        </ul>
+
+
+        <div class="main-content">
+            <div id="list-title" contenteditable="true" onblur="updateNavbarListTitle()" class="list-title">List 1</div>
+            <div class="box">
+                <ul id="taskList">
+                    <!----------- TODO: Change updateTask() functions onchange to onblur ----------->
+                    <li>
+                        <div class="circle" onclick="taskCompleted(event)"></div>
+                        <div class="task-input task-text" contenteditable="true" onchange="updateTask(event)">Task 1</div>
+                        <img src="./img/tag.png" class="tag-button" onclick="toggleTagDropdown(event)" />
+                        <div class="tag-dropdown"></div>
+                        <img src="./img/delete.png" class="delete-button" onclick="deleteTask(event)" alt="Delete"/>
+                    </li>
+                    <li>
+                        <div class="circle" onclick="taskCompleted(event)"></div>
+                        <div class="task-input task-text" contenteditable="true" onchange="updateTask(event)">Task 2</div>
+                        <img src="./img/tag.png" class="tag-button" onclick="toggleTagDropdown(event)" />
+                        <div class="tag-dropdown"></div>
+                        <img src="./img/delete.png" class="delete-button" onclick="deleteTask(event)" alt="Delete"/>
+                    </li>
+                    <li>
+                        <div class="circle" onclick="taskCompleted(event)"></div>
+                        <div class="task-input task-text" contenteditable="true" onchange="updateTask(event)">Task 3</div>
+                        <img src="./img/tag.png" class="tag-button" onclick="toggleTagDropdown(event)" />
+                        <div class="tag-dropdown"></div>
+                        <img src="./img/delete.png" class="delete-button" onclick="deleteTask(event)" alt="Delete"/>
+                    </li>
+                    <li>
+                        <div class="circle" onclick="taskCompleted(event)"></div>
+                        <div class="task-input task-text" contenteditable="true" onchange="updateTask(event)">Task 4</div>
+                        <img src="./img/tag.png" class="tag-button" onclick="toggleTagDropdown(event)" />
+                        <div class="tag-dropdown"></div>
+                        <img src="./img/delete.png" class="delete-button" onclick="deleteTask(event)" alt="Delete"/>
+                    </li>
+                </ul>
+                <form id="input-container">
+                    <input type="text" id="newTaskInput" placeholder="Add a New Task" />
+                    <button id="addButton" onclick="addTask()">+</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="./js/main.js"></script>
+    <script src="./js/auth.js"></script>
+</body>
+</html>
