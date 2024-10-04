@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Taskly</title>
+    <link rel="icon" href="../static/img/favicon.ico" type="image/x-icon"/>
+    <link href="../static/css/home.css" rel="stylesheet" type="text/css" />
+    <link href="../static/css/home-dark.css" rel="stylesheet" type="text/css" />
+    <link href="../static/css/main-page.css" rel="stylesheet" type="text/css" />
+    <link href="../static/css/main-page-dark.css" rel="stylesheet" type="text/css" />
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+        integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous">
+    </script>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Top Navbar -->
+        <img src="../static/img/logo.png" alt="Taskly" class="logo" style="margin-left: -10px;" />
+        <div class="top-nav">
+            <div class="right-top-navbar">
+                <img src="../static/img/lightdark-icon-black.png" class="mode-icon" id="lightdarkIcon" onclick="toggleLightDarkModeHome()">
+                <!-- Google Log In Button -->
+                <button id="loginButton" class="loginButton" onclick="signIn()">Log In</button>
+            </div>
+        </div>
+        
+        <!-- Content Section -->
+        <div class="content">
+          <div class="text-section">
+              <h1 class="big-text">Write it. Do it. Done. We make it easy.</h1>
+              <h4 class="small-text">Your productivity starts here. Say goodbye to messy scribbles and relying on memory to remember all your tasks. Get things done with the #1 to-do app.</h4>
+              <button id="loginButton" class="start-button" onclick="signIn()">Get Started Now</button>
+          </div>
+          <div class="image-section">
+              <img src="../static/img/screenshot.png" alt="Screenshot" id="screenshot">
+          </div>
+        </div>
+    </div>
+
+    <script src="../static/js/home.js"></script>
+    <script src="../static/js/auth.js"></script>
+</body>
+
+</html>
