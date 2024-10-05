@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 import config
+import random
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///tasks.db'  # SQLite database file
@@ -20,6 +21,7 @@ class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(150), unique=True, nullable=False)
     password = db.Column(db.String(150), nullable=False)
+    profile_color = db.Column(db.String(7), default="#FFFFFF")  # Default to white color
     tasks = db.relationship('Task', backref='owner', lazy=True)  # Relationship to tasks
 
 # Task model
@@ -47,6 +49,9 @@ def load_user(user_id):
     return User.query.get(int(user_id))
 
 
+def generate_random_color():
+    return "#{:06x}".format(random.randint(0, 0xFFFFFF))
+
 # Routes for registration and login
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -62,7 +67,8 @@ def register():
 
         # Hash the password before saving
         hashed_password = generate_password_hash(password)
-        new_user = User(username=username, password=hashed_password)
+        profile_color = generate_random_color()  # Assign new user a random profile color
+        new_user = User(username=username, password=hashed_password, profile_color=profile_color)
         db.session.add(new_user)
         db.session.commit()
         flash('<span class="success-message">Registration successful! You can now log in.</span>')
@@ -103,7 +109,7 @@ def startUp():
 @app.route('/tasks')
 @login_required
 def mainPage():
-    return render_template('main-page.html')
+    return render_template('main-page.html', username=current_user.username, profile_color=current_user.profile_color)
 
 
 # RESTful API Endpoints

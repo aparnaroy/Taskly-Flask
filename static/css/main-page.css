@@ -95,18 +95,18 @@ body {
     width: 40px; /* Adjust size as needed */
     height: 40px; /* Adjust size as needed */
     border-radius: 50%; /* Make it circular */
-    background-color: #3498db; /* Change color as needed */
+    /* background-color: #3498db; */
     color: white; /* Text color */
     display: flex;
     align-items: center; /* Center align text vertically */
     justify-content: center; /* Center align text horizontally */
     font-size: 19px; /* Font size for the letter */
     margin-left: 20px; /* Space between circle and name */
-    transition: background-color 0.3s ease; /* Smooth transition for hover effect */
+    transition: filter 0.3s ease; /* Smooth transition for hover effect */
 }
 
 .user-circle:hover {    
-    background-color: #50abe8; /* Change color as needed */
+    filter: brightness(1.2);
     cursor: pointer;
 }
 
