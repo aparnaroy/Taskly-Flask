@@ -54,4 +54,11 @@ button:hover {
 .flashed-message {
     margin: 10px 0; /* Margin above and below */
     color: rgb(219, 1, 1); /* Red color for error messages */
+    font-weight: bold;
+}
+
+.success-message {
+    margin: 10px 0;
+    color: green; /* Change text color to green */
+    font-weight: bold;
 }

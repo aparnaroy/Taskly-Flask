@@ -58,7 +58,7 @@ def register():
         new_user = User(username=username, password=hashed_password)
         db.session.add(new_user)
         db.session.commit()
-        flash('Registration successful! You can now log in.')
+        flash('<span class="success-message">Registration successful! You can now log in.</span>')
         return redirect(url_for('login'))
     return render_template('register.html')
 
