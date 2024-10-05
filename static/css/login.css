@@ -1,0 +1,57 @@
+body {
+    margin: 0;
+    height: 100vh;
+    background: linear-gradient(to bottom right, #0279c9, #372991, #372991, #8e02ac); 
+    display: flex;
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    font-family: Arial, sans-serif; /* Set a default font */
+}
+
+h1 {
+    color: #333; /* Dark gray text color */
+    font-size: 40px;
+}
+
+.form-container {
+    background-color: white; /* White background for the box */
+    padding: 30px; /* Padding inside the box */
+    border-radius: 20px; /* Rounded corners */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    width: 450px; /* Set a fixed width for the box */
+    text-align: center; /* Center the text */
+}
+
+input[type="text"],
+input[type="password"] {
+    width: 350px;
+    padding: 10px; /* Padding inside the fields */
+    margin: 10px 0; /* Margin above and below */
+    border: 1px solid #ccc; /* Light gray border */
+    border-radius: 5px; /* Rounded corners */
+    font-size: 16px; /* Font size */
+}
+
+button {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    background-color: #3498db; /* Button color */
+    color: white; /* Text color */
+    border: none; /* No border */
+    padding: 10px 20px; /* Padding inside the button */
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer; /* Pointer on hover */
+    font-size: 16px; /* Font size */
+    transition: background-color 0.3s; /* Smooth transition */
+}
+
+/* Change button color on hover */
+button:hover {
+    background-color: #8e02ac; /* Darker shade on hover */
+}
+
+/* Flash message styles */
+.flashed-message {
+    margin: 10px 0; /* Margin above and below */
+    color: rgb(219, 1, 1); /* Red color for error messages */
+}

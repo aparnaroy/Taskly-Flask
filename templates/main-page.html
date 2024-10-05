@@ -20,14 +20,15 @@
         <div class="top-nav">
             <div class="right-top-navbar">
                 <img src="../static/img/lightdark-icon-black.png" class="mode-icon" id="lightdarkIcon" onclick="toggleLightDarkMode()">
-                <!------- TODO: Remove placeholder username, user-circle, and user-email text -------->
+                <!------- TODO: Remove placeholder username and user-circle text -------->
                 <span class="username">Welcome, Royal Devil</span> 
                 <div class="user-circle" onclick="toggleDropdown()">R</div>
 
                 <!-- Dropdown Menu -->
                 <div class="user-dropdown" id="userDropdown">
-                    <p class="user-email">royaldevil@gmail.com</p> <!-- User email will be displayed here -->
-                    <button class="logout-button" onclick="signOut()">Log Out</button>
+                    <form action="{{ url_for('logout') }}" method="POST" style="display:inline;">
+                        <button type="submit" class="logout-button">Log Out</button>
+                    </form>
                 </div>
             </div>
         </div>

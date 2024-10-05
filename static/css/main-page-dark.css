@@ -23,10 +23,6 @@ body.dark-mode .user-dropdown {
     box-shadow: 0 4px 18px rgba(255, 255, 255, 0.1);
 }
 
-body.dark-mode .user-email {
-    color: white;
-}
-
 body.dark-mode #list-title {
     color: white; /* Text color */
     background-color: #111; /* Background color */

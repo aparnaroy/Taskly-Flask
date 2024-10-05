@@ -1,9 +1,7 @@
-function signIn() {
-    // TODO: Add auth sign in code
-    window.location.href = "start-up";
+function register() {
+    window.location.href = "register";
 }
 
-function signOut() {
-    // TODO: Add auth sign out code
-    window.location.href = "/";
+function signIn() {
+    window.location.href = "login";
 }

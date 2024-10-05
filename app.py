@@ -1,10 +1,25 @@
-from flask import Flask, jsonify, request, render_template
+from flask import Flask, jsonify, request, render_template, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
+from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
+from werkzeug.security import generate_password_hash, check_password_hash
+import config
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///tasks.db'  # SQLite database file
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SECRET_KEY'] = config.SECRET_KEY
 db = SQLAlchemy(app)
+
+# Initialize Flask-Login
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'login'
+
+# User model
+class User(db.Model, UserMixin):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(150), unique=True, nullable=False)
+    password = db.Column(db.String(150), nullable=False)
 
 # Task model
 class Task(db.Model):
@@ -15,20 +30,71 @@ class Task(db.Model):
     def to_dict(self):
         return {"id": self.id, "title": self.title, "completed": self.completed}
 
+
 # Create the database tables
 with app.app_context():
     db.create_all()
 
-# All page routes
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
+
+
+# Routes for registration and login
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+
+        # Check if the user already exists
+        existing_user = User.query.filter_by(username=username).first()
+        if existing_user:
+            flash('Username already exists.<br>Please choose a different username.')
+            return redirect(url_for('register'))
+
+        # Hash the password before saving
+        hashed_password = generate_password_hash(password)
+        new_user = User(username=username, password=hashed_password)
+        db.session.add(new_user)
+        db.session.commit()
+        flash('Registration successful! You can now log in.')
+        return redirect(url_for('login'))
+    return render_template('register.html')
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        user = User.query.filter_by(username=username).first()
+        
+        if user and check_password_hash(user.password, password):  # Check hashed password
+            login_user(user)
+            return redirect(url_for('startUp'))  # Take user to start up page
+        else:
+            flash('Invalid username or password')
+    return render_template('login.html')
+
+@app.route('/logout', methods=['POST'])
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for('index'))
+
+
+# All other page routes
 @app.route('/')
 def index():
     return render_template('index.html')
 
 @app.route('/start-up')
+@login_required
 def startUp():
     return render_template('start-up.html')
 
 @app.route('/tasks')
+@login_required
 def mainPage():
     return render_template('main-page.html')
 
@@ -37,18 +103,21 @@ def mainPage():
 
 # GET All Tasks
 @app.route('/api/tasks', methods=['GET'])
+@login_required
 def get_tasks():
     tasks = Task.query.all()
     return jsonify([task.to_dict() for task in tasks])
 
 # GET Specific Task
 @app.route('/api/tasks/<int:task_id>', methods=['GET'])
+@login_required
 def get_task(task_id):
     task = Task.query.get(task_id)
     return jsonify(task.to_dict()) if task else ('', 404)
 
 # CREATE/POST a Task
 @app.route('/api/tasks', methods=['POST'])
+@login_required
 def create_task():
     new_task = Task(title=request.json['title'])
     db.session.add(new_task)
@@ -57,6 +126,7 @@ def create_task():
 
 # UPDATE/PUT a Specific Task
 @app.route('/api/tasks/<int:task_id>', methods=['PUT'])
+@login_required
 def update_task(task_id):
     task = Task.query.get(task_id)
     if task:
@@ -68,6 +138,7 @@ def update_task(task_id):
 
 # DELETE a Specific Task
 @app.route('/api/tasks/<int:task_id>', methods=['DELETE'])
+@login_required
 def delete_task(task_id):
     task = Task.query.get(task_id)
     if task:
