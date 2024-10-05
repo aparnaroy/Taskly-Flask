@@ -1,5 +1,3 @@
-// TODO: Add updateTask() function to save task updates
-
 // Document ready function
 $(function () {
     // Make it so you can hit Enter to create a new task in addition to clicking the Add button
@@ -73,30 +71,14 @@ window.onclick = function(event) {
     }
 };
 
+
+
 $(document).ready(function() {
-    // // Retrieve user info from sessionStorage
-    // const username = sessionStorage.getItem('username');
-    // const userInitial = sessionStorage.getItem('userInitial');
-    // const email = sessionStorage.getItem('userEmail');
-
-    // console.log(username, userInitial, email);
-
-    // // Check if username exists, then update the UI
-    // if (username) {
-    //     document.querySelector('.username').textContent = `Welcome, ${username}`;
-    //     document.querySelector('.user-circle').textContent = userInitial;
-    // }
-
-    // if (email) {
-    //     document.querySelector('.user-email').textContent = email;
-    // }
-
     // Call the function on page load to ensure layout is correct
     handleResize();
 
     loadTasks();
 });
-
 
 
 // Task Functions
@@ -215,6 +197,11 @@ async function taskCompleted(event) {
     const taskId = taskElement.dataset.taskId;  // Get task ID from the data attribute
     const isCompleted = taskElement.classList.contains('completed');
 
+    // Play confetti animation if task is completed
+    if (isCompleted) {
+        createConfetti();
+    }
+
     try {
         const response = await fetch(`/api/tasks/${taskId}`, {
             method: 'PUT',
@@ -266,9 +253,6 @@ async function deleteTask(event) {
     }
 }
 
-
-
-
 function createConfetti() {
     const numConfetti = 900; // Number of confetti pieces
     const colors = [
@@ -311,15 +295,6 @@ function createConfetti() {
     }
 }
 
-// Function to generate a random color
-function getRandomColor() {
-    const letters = '0123456789ABCDEF';
-    let color = '#';
-    for (let i = 0; i < 6; i++) {
-        color += letters[Math.floor(Math.random() * 16)];
-    }
-    return color;
-}
 
 
 

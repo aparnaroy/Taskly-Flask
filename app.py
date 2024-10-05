@@ -6,9 +6,10 @@ import config
 import random
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///tasks.db'  # SQLite database file
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///tasks.db'  # SQLite database file
+app.config['SQLALCHEMY_DATABASE_URI'] = config.SQLALCHEMY_DATABASE_URI  # MySQL database
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SECRET_KEY'] = config.SECRET_KEY
+app.config['SECRET_KEY'] = config.SECRET_KEY  # For session/cookie data management
 db = SQLAlchemy(app)
 
 # Initialize Flask-Login
@@ -20,7 +21,7 @@ login_manager.login_view = 'login'
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(150), unique=True, nullable=False)
-    password = db.Column(db.String(150), nullable=False)
+    password = db.Column(db.String(512), nullable=False)
     profile_color = db.Column(db.String(7), default="#FFFFFF")  # Default to white color
     tasks = db.relationship('Task', backref='owner', lazy=True)  # Relationship to tasks
 
@@ -43,6 +44,7 @@ class Task(db.Model):
 # Create the database tables
 with app.app_context():
     db.create_all()
+
 
 @login_manager.user_loader
 def load_user(user_id):
