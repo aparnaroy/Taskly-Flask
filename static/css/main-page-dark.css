@@ -27,22 +27,6 @@ body.dark-mode .user-email {
     color: white;
 }
 
-body.dark-mode .side-nav {
-    background-color: #eee; /* White sidebar */
-}
-
-body.dark-mode .side-nav h2 {
-    color: rgb(0, 0, 0); /* Black text for sidebar titles */
-}
-
-body.dark-mode .side-nav a {
-    color: rgb(59, 59, 59); /* Black text for sidebar links */
-}
-
-body.dark-mode .side-nav a:hover {
-    color: #000000; /* Darker on hover */
-}
-
 body.dark-mode #list-title {
     color: white; /* Text color */
     background-color: #111; /* Background color */
@@ -50,13 +34,6 @@ body.dark-mode #list-title {
 
 body.dark-mode #list-title:focus {
     border-bottom: 1px solid #eee; /* Optional: underline on focus */
-}
-
-body.dark-mode .list-item:hover {
-    background-color: #d6d4d4;
-}
-body.dark-mode .tag-item:hover {
-    background-color: #d6d4d4;
 }
 
 body.dark-mode .box {
@@ -100,16 +77,4 @@ body.dark-mode .completed {
 
 body.dark-mode .delete-button {
     filter: invert(1);
-}
-
-body.dark-mode .tag-button {
-    filter: invert(1);
-}
-
-body.dark-mode .add-list {
-    filter: invert(0);
-}
-
-body.dark-mode .add-tag {
-    filter: invert(0);
 }

@@ -5,5 +5,5 @@ function signIn() {
 
 function signOut() {
     // TODO: Add auth sign out code
-    window.location.href = "index";
+    window.location.href = "/";
 }
