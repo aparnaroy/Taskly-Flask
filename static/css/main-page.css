@@ -215,10 +215,6 @@ body {
     transition: text-align 0.5s ease, margin-left 0.5s ease; /* Smooth transition */
 }
 
-#list-title:focus {
-    border-bottom: 1px solid #111; /* Optional: underline on focus */
-}
-
 /* Center the box by default */
 .box {
     width: calc(100% - 735px); /* Adjust width as needed */

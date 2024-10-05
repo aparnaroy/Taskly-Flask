@@ -20,15 +20,22 @@ class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(150), unique=True, nullable=False)
     password = db.Column(db.String(150), nullable=False)
+    tasks = db.relationship('Task', backref='owner', lazy=True)  # Relationship to tasks
 
 # Task model
 class Task(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(200), nullable=False)
+    description = db.Column(db.String(200), nullable=False)
     completed = db.Column(db.Boolean, default=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)  # Link to User
 
     def to_dict(self):
-        return {"id": self.id, "title": self.title, "completed": self.completed}
+        return {
+            "id": self.id,
+            "description": self.description,
+            "completed": self.completed,
+            "user_id": self.user_id
+        }
 
 
 # Create the database tables
@@ -105,21 +112,21 @@ def mainPage():
 @app.route('/api/tasks', methods=['GET'])
 @login_required
 def get_tasks():
-    tasks = Task.query.all()
+    tasks = Task.query.filter_by(user_id=current_user.id).all()  # Filter tasks by user
     return jsonify([task.to_dict() for task in tasks])
 
 # GET Specific Task
 @app.route('/api/tasks/<int:task_id>', methods=['GET'])
 @login_required
 def get_task(task_id):
-    task = Task.query.get(task_id)
+    task = Task.query.filter_by(id=task_id, user_id=current_user.id).first()
     return jsonify(task.to_dict()) if task else ('', 404)
 
 # CREATE/POST a Task
 @app.route('/api/tasks', methods=['POST'])
 @login_required
 def create_task():
-    new_task = Task(title=request.json['title'])
+    new_task = Task(description=request.json['description'], user_id=current_user.id)
     db.session.add(new_task)
     db.session.commit()
     return jsonify(new_task.to_dict()), 201
@@ -128,9 +135,9 @@ def create_task():
 @app.route('/api/tasks/<int:task_id>', methods=['PUT'])
 @login_required
 def update_task(task_id):
-    task = Task.query.get(task_id)
+    task = Task.query.filter_by(id=task_id, user_id=current_user.id).first()
     if task:
-        task.title = request.json.get('title', task.title)
+        task.description = request.json.get('description', task.description)
         task.completed = request.json.get('completed', task.completed)
         db.session.commit()
         return jsonify(task.to_dict())
@@ -140,7 +147,7 @@ def update_task(task_id):
 @app.route('/api/tasks/<int:task_id>', methods=['DELETE'])
 @login_required
 def delete_task(task_id):
-    task = Task.query.get(task_id)
+    task = Task.query.filter_by(id=task_id, user_id=current_user.id).first()
     if task:
         db.session.delete(task)
         db.session.commit()

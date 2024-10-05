@@ -136,7 +136,7 @@ function createTaskElement(task) {
 
     newTask.innerHTML = `
         <div class="circle" onclick="taskCompleted(event)"></div>
-        <div class="task-input task-text ${task.completed ? 'completed' : ''}" contenteditable="true" onblur="updateTask(event)">${task.title}</div>
+        <div class="task-input task-text ${task.completed ? 'completed' : ''}" contenteditable="true" onblur="updateTask(event)">${task.description}</div>
         <img src="../static/img/delete.png" class="delete-button" onclick="deleteTask(event)" alt="Delete"/>
     `;
 
@@ -158,7 +158,7 @@ async function addTask(event) {
         const response = await fetch('/api/tasks', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ title: input.value, completed: false })
+            body: JSON.stringify({ description: input.value, completed: false })
         });
 
         if (response.ok) {
@@ -180,9 +180,9 @@ async function addTask(event) {
 async function updateTask(event) {
     const taskElement = event.currentTarget.closest('li');
     const taskId = taskElement.dataset.taskId;  // Get task ID
-    const updatedTitle = event.currentTarget.textContent.trim();
+    const updatedDescription = event.currentTarget.textContent.trim();
 
-    if (updatedTitle === '') {
+    if (updatedDescription === '') {
         alert('Task cannot be empty');
         return;
     }
@@ -191,7 +191,7 @@ async function updateTask(event) {
         const response = await fetch(`/api/tasks/${taskId}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ title: updatedTitle })
+            body: JSON.stringify({ description: updatedDescription })
         });
 
         if (!response.ok) {
