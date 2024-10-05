@@ -35,32 +35,20 @@
         <div class="main-content">
             <div id="list-title" contenteditable="true" class="list-title">List 1</div>
             <div class="box">
+                <div id="no-tasks-message">
+                    You have no tasks.
+                </div>
+                
                 <ul id="taskList">
-                    <!----------- TODO: Change updateTask() functions onchange to onblur ----------->
-                    <li>
+                    <!-- <li>
                         <div class="circle" onclick="taskCompleted(event)"></div>
                         <div class="task-input task-text" contenteditable="true" onchange="updateTask(event)">Task 1</div>
                         <img src="../static/img/delete.png" class="delete-button" onclick="deleteTask(event)" alt="Delete"/>
-                    </li>
-                    <li>
-                        <div class="circle" onclick="taskCompleted(event)"></div>
-                        <div class="task-input task-text" contenteditable="true" onchange="updateTask(event)">Task 2</div>
-                        <img src="../static/img/delete.png" class="delete-button" onclick="deleteTask(event)" alt="Delete"/>
-                    </li>
-                    <li>
-                        <div class="circle" onclick="taskCompleted(event)"></div>
-                        <div class="task-input task-text" contenteditable="true" onchange="updateTask(event)">Task 3</div>
-                        <img src="../static/img/delete.png" class="delete-button" onclick="deleteTask(event)" alt="Delete"/>
-                    </li>
-                    <li>
-                        <div class="circle" onclick="taskCompleted(event)"></div>
-                        <div class="task-input task-text" contenteditable="true" onchange="updateTask(event)">Task 4</div>
-                        <img src="../static/img/delete.png" class="delete-button" onclick="deleteTask(event)" alt="Delete"/>
-                    </li>
+                    </li> -->
                 </ul>
                 <form id="input-container">
                     <input type="text" id="newTaskInput" placeholder="Add a New Task" />
-                    <button id="addButton" onclick="addTask()">+</button>
+                    <button id="addButton" onclick="addTask(event)">+</button>
                 </form>
             </div>
         </div>

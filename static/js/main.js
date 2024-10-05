@@ -58,52 +58,215 @@ function toggleLightDarkMode() {
     }
 }
 
+// User profile dropdown menu
+function toggleDropdown() {
+    const dropdown = document.getElementById("userDropdown");
+    dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+}
 
-// Task List Functions
+window.onclick = function(event) {
+    const userDropdown = document.getElementById("userDropdown");
+    if (!event.target.matches('.user-circle')) {
+        if (userDropdown.style.display === "block") {
+            userDropdown.style.display = "none";
+        }
+    }
+};
 
-function addTask() {
-    const input = document.getElementById('newTaskInput');
-    const taskList = document.getElementById('taskList');
+$(document).ready(function() {
+    // // Retrieve user info from sessionStorage
+    // const username = sessionStorage.getItem('username');
+    // const userInitial = sessionStorage.getItem('userInitial');
+    // const email = sessionStorage.getItem('userEmail');
 
-    if (input.value.trim() === '') return; // Ignore empty input
+    // console.log(username, userInitial, email);
 
+    // // Check if username exists, then update the UI
+    // if (username) {
+    //     document.querySelector('.username').textContent = `Welcome, ${username}`;
+    //     document.querySelector('.user-circle').textContent = userInitial;
+    // }
+
+    // if (email) {
+    //     document.querySelector('.user-email').textContent = email;
+    // }
+
+    // Call the function on page load to ensure layout is correct
+    handleResize();
+
+    loadTasks();
+});
+
+
+
+// Task Functions
+
+// LOAD TASKS (GET Request)
+async function loadTasks() {
+    try {
+        const response = await fetch('/api/tasks');
+        const tasks = await response.json();
+
+        const taskList = document.getElementById('taskList');
+        taskList.innerHTML = ''; // Clear existing tasks
+
+        if (tasks.length === 0) {
+            document.getElementById('no-tasks-message').style.display = 'block';
+        } else {
+            document.getElementById('no-tasks-message').style.display = 'none';
+            tasks.forEach(task => {
+                const taskElement = createTaskElement(task);
+                taskList.appendChild(taskElement);
+            });
+        }
+    } catch (error) {
+        console.error('Error loading tasks:', error);
+    }
+}
+
+// Helper function to create a task element HTML
+function createTaskElement(task) {
     const newTask = document.createElement('li');
-    newTask.innerHTML = `<div class="circle" onclick="taskCompleted(event)"></div>
-                        <div class="task-input task-text" contenteditable="true" onchange="updateTask(event)">${input.value}</div>
-                        <img src="../static/img/delete.png" class="delete-button" onclick="deleteTask(event)" alt="Delete"/>`;
-    taskList.appendChild(newTask);
+    newTask.dataset.taskId = task.id;  // Store task ID in a data attribute
+
+    // Mark as completed if it is
+    if (task.completed) {
+        newTask.classList.add('completed');
+    }
+
+    newTask.innerHTML = `
+        <div class="circle" onclick="taskCompleted(event)"></div>
+        <div class="task-input task-text ${task.completed ? 'completed' : ''}" contenteditable="true" onblur="updateTask(event)">${task.title}</div>
+        <img src="../static/img/delete.png" class="delete-button" onclick="deleteTask(event)" alt="Delete"/>
+    `;
+
+    return newTask;
+}
+
+
+// CREATE TASK (POST Request)
+async function addTask(event) {
+    event.preventDefault();
+
+    const input = document.getElementById('newTaskInput');
+    if (input.value.trim() === '') {
+        alert('Task cannot be empty');
+        return; // Ignore empty input
+    }
+
+    try {
+        const response = await fetch('/api/tasks', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ title: input.value, completed: false })
+        });
+
+        if (response.ok) {
+            const newTask = await response.json();
+            document.getElementById('no-tasks-message').style.display = 'none'; // Hide the no tasks message
+            const taskElement = createTaskElement(newTask);
+            document.getElementById('taskList').appendChild(taskElement);
+        }
+
+    } catch (error) {
+        console.error('Error adding task:', error);
+    }
 
     input.value = ''; // Clear the input field
 }
 
-function deleteTask(event) {
-    const listItem = event.currentTarget.closest('li');
-    listItem.style.transition = 'opacity 0.5s ease'; // Add a transition for smooth removal
-    listItem.style.opacity = '0'; // Fade out
 
-    // Remove the item after the fade-out transition
-    setTimeout(() => {
-        listItem.remove();
-    }, 500); // Match the duration with the CSS transition
+// UPDATE TASK Text (PUT Request)
+async function updateTask(event) {
+    const taskElement = event.currentTarget.closest('li');
+    const taskId = taskElement.dataset.taskId;  // Get task ID
+    const updatedTitle = event.currentTarget.textContent.trim();
+
+    if (updatedTitle === '') {
+        alert('Task cannot be empty');
+        return;
+    }
+
+    try {
+        const response = await fetch(`/api/tasks/${taskId}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ title: updatedTitle })
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to update the task');
+        }
+
+        console.log('Task updated successfully');
+    } catch (error) {
+        console.error('Error updating task:', error);
+    }
 }
 
 
+// UPDATE TASK Completion (PUT Request)
+async function taskCompleted(event) {
+    const taskElement = event.currentTarget.closest('li');
+    const taskTextElement = taskElement.querySelector('.task-text');
+    taskElement.classList.toggle('completed'); // Toggle the completed class
+    taskTextElement.classList.toggle('completed');
 
-function taskCompleted(event) {
-    const listItem = event.currentTarget.closest('li');
-    listItem.classList.toggle('completed'); // Toggle the completed class
+    const taskId = taskElement.dataset.taskId;  // Get task ID from the data attribute
+    const isCompleted = taskElement.classList.contains('completed');
 
-    const taskInput = listItem.querySelector('.task-text');
+    try {
+        const response = await fetch(`/api/tasks/${taskId}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ completed: isCompleted })
+        });
 
-    if (taskInput) {
-        taskInput.classList.toggle('completed'); // Toggle the completed class for the input
-    }
-
-    // Trigger confetti effect if task completed
-    if (listItem.classList.contains('completed')) {
-        createConfetti();
+        if (response.ok) {
+            console.log(`Task ${taskId} updated successfully.`);
+        } else {
+            console.error('Error updating task:', await response.text());
+        }
+    } catch (error) {
+        console.error('Error updating task:', error);
     }
 }
+
+
+// DELETE TASK (DELETE Request)
+async function deleteTask(event) {
+    const taskElement = event.currentTarget.closest('li');
+    const taskId = taskElement.dataset.taskId;  // Get task ID
+
+    try {
+        const response = await fetch(`/api/tasks/${taskId}`, {
+            method: 'DELETE'        
+        });
+
+        if (response.ok) {
+            taskElement.style.transition = 'opacity 0.5s ease'; // Smooth removal
+            taskElement.style.opacity = '0'; // Fade out
+            // Remove the task from the DOM after the fade-out transition
+            setTimeout(() => {
+                taskElement.remove();
+                
+                // Show no tasks message if there are no tasks left
+                const taskList = document.getElementById('taskList');
+                if (taskList.children.length === 0) {
+                    document.getElementById('no-tasks-message').style.display = 'block';
+                }
+            }, 500);
+
+            console.log(`Task ${taskId} deleted successfully.`);
+        } else {
+            console.error('Error deleting task:', await response.text());
+        }
+    } catch (error) {
+        console.error('Error deleting task:', error);
+    }
+}
+
+
 
 
 function createConfetti() {
@@ -148,7 +311,6 @@ function createConfetti() {
     }
 }
 
-
 // Function to generate a random color
 function getRandomColor() {
     const letters = '0123456789ABCDEF';
@@ -159,39 +321,6 @@ function getRandomColor() {
     return color;
 }
 
-// User profile dropdown menu
-function toggleDropdown() {
-    const dropdown = document.getElementById("userDropdown");
-    dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
-}
 
-$(document).ready(function() {
-    // Retrieve user info from sessionStorage
-    const username = sessionStorage.getItem('username');
-    const userInitial = sessionStorage.getItem('userInitial');
-    const email = sessionStorage.getItem('userEmail');
 
-    console.log(username, userInitial, email);
 
-    // Check if username exists, then update the UI
-    if (username) {
-        document.querySelector('.username').textContent = `Welcome, ${username}`;
-        document.querySelector('.user-circle').textContent = userInitial;
-    }
-
-    if (email) {
-        document.querySelector('.user-email').textContent = email;
-    }
-
-    // Call the function on page load to ensure layout is correct
-    handleResize();
-});
-
-window.onclick = function(event) {
-    const userDropdown = document.getElementById("userDropdown");
-    if (!event.target.matches('.user-circle')) {
-        if (userDropdown.style.display === "block") {
-            userDropdown.style.display = "none";
-        }
-    }
-};

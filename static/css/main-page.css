@@ -453,3 +453,12 @@ body {
     height: 12px;
     background-color: #DAF7A6;
 }
+
+#no-tasks-message {
+    display: none; 
+    text-align: center; 
+    margin-top: 40px;
+    font-size: 27px;
+    font-weight: bold;
+    color: #878787;
+}
