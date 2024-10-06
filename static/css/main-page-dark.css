@@ -17,6 +17,10 @@ body.dark-mode .username {
     color: rgb(249, 249, 249)
 }
 
+body.dark-mode .user-email {
+    color: white;
+}
+
 body.dark-mode .user-dropdown {
     background-color: #111;
     border: 1px solid #303030;
